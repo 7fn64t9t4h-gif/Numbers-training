@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>تدريب الأرقام</title>
+<style>
+body{
+margin:0;background:#111;color:white;font-family:Arial;
+text-align:center;display:flex;flex-direction:column;
+align-items:center;justify-content:center;height:100vh
+}
+#num{font-size:160px;font-weight:bold;margin-bottom:50px}
+button,select{
+font-size:20px;padding:12px 20px;margin:6px;
+border-radius:12px;border:0
+}
+</style>
+</head>
+<body>
+
+<div id="num">00</div>
+
+<select id="speed">
+<option value="0.5">0.5 ثانية</option>
+<option value="1">1 ثانية</option>
+<option value="1.5" selected>1.5 ثانية</option>
+<option value="2">2 ثانية</option>
+<option value="3">3 ثوانٍ</option>
+</select>
+
+<button onclick="start()">ابدأ</button>
+<button onclick="stop()">إيقاف</button>
+
+<script>
+let timer;
+
+function next(){
+document.getElementById("num").textContent=
+String(Math.floor(Math.random()*100)).padStart(2,"0");
+}
+
+function start(){
+stop();
+next();
+timer=setInterval(next,
+Number(document.getElementById("speed").value)*1000);
+}
+
+function stop(){
+clearInterval(timer);
+}
+</script>
+
+</body>
+</html>
