@@ -1,56 +1,194 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>تدريب الأرقام</title>
-<style>
-body{
-margin:0;background:#111;color:white;font-family:Arial;
-text-align:center;display:flex;flex-direction:column;
-align-items:center;justify-content:center;height:100vh
-}
-#num{font-size:160px;font-weight:bold;margin-bottom:50px}
-button,select{
-font-size:20px;padding:12px 20px;margin:6px;
-border-radius:12px;border:0
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مدرب الذاكرة للأرقام</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 25px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 350px;
+        }
+        .display {
+            font-size: 4.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: right;
+        }
+        label {
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+        .range-inputs {
+            display: flex;
+            gap: 8px;
+        }
+        select, input, button {
+            padding: 12px;
+            font-size: 16px; /* يمنع التكبير التلقائي في الآيفون */
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #2a2a2a;
+            color: #fff;
+            text-align: center;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .range-inputs input {
+            width: 50%;
+        }
+        button {
+            background-color: #007aff;
+            color: #ffffff;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            margin-top: 5px;
+        }
+        button.stop {
+            background-color: #ff3b30;
+        }
+        button:disabled {
+            opacity: 0.4;
+        }
+    </style>
 </head>
 <body>
 
-<div id="num">00</div>
+    <div class="container">
+        <div id="numberDisplay" class="display">100</div>
 
-<select id="speed">
-<option value="0.5">0.5 ثانية</option>
-<option value="1">1 ثانية</option>
-<option value="1.5" selected>1.5 ثانية</option>
-<option value="2">2 ثانية</option>
-<option value="3">3 ثوانٍ</option>
-</select>
+        <div class="controls">
+            <div class="input-group">
+                <label>نطاق الأرقام (من - إلى):</label>
+                <div class="range-inputs">
+                    <input type="number" id="minNum" value="100" pattern="[0-9]*" inputmode="numeric">
+                    <input type="number" id="maxNum" value="110" pattern="[0-9]*" inputmode="numeric">
+                </div>
+            </div>
 
-<button onclick="start()">ابدأ</button>
-<button onclick="stop()">إيقاف</button>
+            <div class="input-group">
+                <label>سرعة التبديل:</label>
+                <select id="speed">
+                    <option value="300">0.3 ثانية</option>
+                    <option value="500">0.5 ثانية</option>
+                    <option value="800">0.8 ثانية</option>
+                    <option value="1000">1.0 ثانية</option>
+                    <option value="1500" selected>1.5 ثانية</option>
+                    <option value="2000">2.0 ثانية</option>
+                </select>
+            </div>
 
-<script>
-let timer;
+            <button id="startBtn">ابدأ</button>
+            <button id="stopBtn" class="stop" disabled>إيقاف</button>
+        </div>
+    </div>
 
-function next(){
-document.getElementById("num").textContent=
-String(Math.floor(Math.random()*100)).padStart(2,"0");
-}
+    <script>
+        var intervalId = null;
 
-function start(){
-stop();
-next();
-timer=setInterval(next,
-Number(document.getElementById("speed").value)*1000);
-}
+        var startBtn = document.getElementById('startBtn');
+        var stopBtn = document.getElementById('stopBtn');
+        var minInput = document.getElementById('minNum');
+        var maxInput = document.getElementById('maxNum');
+        var speedSelect = document.getElementById('speed');
+        var display = document.getElementById('numberDisplay');
 
-function stop(){
-clearInterval(timer);
-}
-</script>
+        function getRandomNumber(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
 
+        function runTraining() {
+            var min = parseInt(minInput.value, 10);
+            var max = parseInt(maxInput.value, 10);
+            var speed = parseInt(speedSelect.value, 10);
+
+            if (isNaN(min) || isNaN(max)) {
+                alert("يرجى إدخال أرقام صحيحة!");
+                return;
+            }
+
+            if (min >= max) {
+                alert("الحد الأدنى يجب أن يكون أصغر من الأعلى!");
+                return;
+            }
+
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            minInput.disabled = true;
+            maxInput.disabled = true;
+            speedSelect.disabled = true;
+
+            display.innerText = getRandomNumber(min, max);
+
+            if (intervalId) clearInterval(intervalId);
+
+            intervalId = setInterval(function() {
+                display.innerText = getRandomNumber(min, max);
+            }, speed);
+        }
+
+        function haltTraining() {
+            if (intervalId) clearInterval(intervalId);
+
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            minInput.disabled = false;
+            maxInput.disabled = false;
+            speedSelect.disabled = false;
+        }
+
+        // إسناد الأجداث لدعم اللمس في الآيفون بشكل مباشر
+        startBtn.addEventListener('click', runTraining);
+        startBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            runTraining();
+        });
+
+        stopBtn.addEventListener('click', haltTraining);
+        stopBtn.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            haltTraining();
+        });
+    </script>
 </body>
 </html>
