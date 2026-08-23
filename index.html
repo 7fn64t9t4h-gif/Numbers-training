@@ -64,7 +64,7 @@
         }
         select, input, button {
             padding: 12px;
-            font-size: 16px; /* يمنع التكبير التلقائي في الآيفون */
+            font-size: 16px;
             border-radius: 8px;
             border: 1px solid #333;
             background-color: #2a2a2a;
@@ -115,6 +115,8 @@
                     <option value="1000">1.0 ثانية</option>
                     <option value="1500" selected>1.5 ثانية</option>
                     <option value="2000">2.0 ثانية</option>
+                    <option value="3000">3.0 ثواني</option>
+                    <option value="5000">5.0 ثواني</option>
                 </select>
             </div>
 
@@ -177,7 +179,6 @@
             speedSelect.disabled = false;
         }
 
-        // إسناد الأجداث لدعم اللمس في الآيفون بشكل مباشر
         startBtn.addEventListener('click', runTraining);
         startBtn.addEventListener('touchend', function(e) {
             e.preventDefault();
